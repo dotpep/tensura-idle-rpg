@@ -13,9 +13,9 @@ Written in C# and .NET framework using OOP.
 - scaling to Telegram/Discord Bots, Web, Engine
 
 ### TODO: Features
-- [ ] Basics
-- [ ] Main Menu
-- [ ] Saving
+- [x] Basics
+- [x] Main Menu
+- [x] Saving
 - [ ] Stats
 - [ ] Map
 - [ ] Saving

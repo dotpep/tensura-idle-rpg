@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASCII-CLI-IdleRPG", "ASCII-CLI-IdleRPG.csproj", "{FAC14F24-38F3-4486-999F-45A9F469F1D2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FAC14F24-38F3-4486-999F-45A9F469F1D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAC14F24-38F3-4486-999F-45A9F469F1D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAC14F24-38F3-4486-999F-45A9F469F1D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAC14F24-38F3-4486-999F-45A9F469F1D2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AAFD33E6-7AC4-49E9-BF91-174D6B910DEB}
+	EndGlobalSection
+EndGlobal
