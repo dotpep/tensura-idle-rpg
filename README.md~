@@ -5,8 +5,7 @@ Written in C# and .NET framework using OOP.
 
 ## Features
 
-- Main Menu
-- Progress Saving
+- 
 
 ## TODO 
 
@@ -14,13 +13,12 @@ Written in C# and .NET framework using OOP.
 - scaling to Telegram/Discord Bots, Web, Engine
 
 ### TODO: Features
-
+- [x] Basics
+- [x] Main Menu
+- [x] Saving
 - [ ] Stats
 - [ ] Map
 - [ ] Movement
-- [ ] Enemies
-- [ ] Battle
-- [ ] Potions
 
 ### Requirements
 
