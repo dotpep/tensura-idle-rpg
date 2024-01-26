@@ -15,12 +15,16 @@ Written in C# and .NET framework using OOP.
 
 ### TODO: Features
 
-- [ ] Stats
-- [ ] Map
-- [ ] Movement
-- [ ] Enemies
-- [ ] Battle
-- [ ] Potions
+- [x] Stats
+- [x] Map
+- [x] Movement
+- [x] Enemies
+- [x] Battle
+- [x] Potions
+- [ ] Shop
+- [ ] NPC
+- [ ] Boss Fight
+
 
 ### Requirements
 

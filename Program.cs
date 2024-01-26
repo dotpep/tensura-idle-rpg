@@ -1,19 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
 using static System.Console;
 
 namespace ASCII_CLI_IdleRPG
 {
     internal class Program
     {
+        // Basic game logic
         static bool isRunning = true;
         static bool isMenu = true;
         static bool isPlay = false;
         static bool isRules = false;
 
         static short choice;
+
+        // Battle logic
+        static bool Fight = false;
+        static bool Standing = true;
+
+        static Random random = new Random();
 
         // character info
         //static string name = "hero";
@@ -22,10 +31,10 @@ namespace ASCII_CLI_IdleRPG
         {
             public string Name { get; set; }
             public int HP { get; set; } = 50;
-            public int HPMAX { get; private set; } = 100;
+            public int HPMAX { get; private set; } = 500;
             public int ATK { get; set; } = 3;
-            public int POTION { get; set; } = 1;
-            public int ELIXIR { get; set; } = 0;
+            public int POTION { get; set; } = 10;
+            public int ELIXIR { get; set; } = 3;
             public int GOLD { get; set; } = 0;
             public int CoordinateX { get; set; } = 0;
             public int CoordinateY { get; set; } = 0;
@@ -78,6 +87,22 @@ namespace ASCII_CLI_IdleRPG
         static object NameOfTile = Biom[CurrentTile]["text"];
         static object EnemyTile = Biom[CurrentTile]["enemy"];
 
+        // dict object string
+        static string CurrentBiomText = (string)Biom[Map[CoordinateY, CoordinateX]]["text"];
+        // dict object boolean
+        static bool CurrentBiomSpawnEnemy = (bool)Biom[Map[CoordinateY, CoordinateX]]["enemy"];
+
+
+        static List<string> EnemyList = new List<string>() { "Goblin", "Orc", "Slime" };
+
+        static Dictionary<string, Dictionary<string, int>> Mobs = new Dictionary<string, Dictionary<string, int>>()
+        {
+            {"Goblin",  new Dictionary<string, int>()   { { "hp", 15 },     { "atk", 3 },   { "gold", 8   }  } },
+            {"Orc",     new Dictionary<string, int>()   { { "hp", 35 },     { "atk", 5 },   { "gold", 18  }  } },
+            {"Slime",   new Dictionary<string, int>()   { { "hp", 30 },     { "atk", 2 },   { "gold", 12  }  } },
+            {"Dragon",  new Dictionary<string, int>()   { { "hp", 100 },    { "atk", 8 },   { "gold", 100 }  } }
+        };
+
         static void startPageInfo()
         {
             drawLine();
@@ -118,6 +143,144 @@ namespace ASCII_CLI_IdleRPG
 
         }
 
+        static void Heal(int amount)
+        {
+            if (HP + amount < HPMAX) { HP += amount; }
+            else { HP = HPMAX; }
+            WriteLine($"{Name}'s HP refilled to {HP}!");
+        }
+
+        static void Battle()
+        {
+
+            WriteLine("Fight happening!");
+
+            int randomEnemyIndex = random.Next(EnemyList.Count);
+            string enemyName = EnemyList[randomEnemyIndex];
+
+            int enemyHP = Mobs[enemyName]["hp"];
+            int enemyHPMax = enemyHP;
+            int enemyATK = Mobs[enemyName]["atk"];
+            int enemyGold = Mobs[enemyName]["gold"];
+
+            while (Fight)
+            {
+                Clear();
+                drawLine();
+                WriteLine("Defeat the " + enemyName + "!");
+                drawLine();
+                WriteLine($"{enemyName}'s HP: {enemyHP}/{enemyHPMax}");
+                WriteLine($"{Name}'s HP: {HP}/{HPMAX}");
+                WriteLine($"POTIONS: {POTION}");
+                WriteLine($"ELIXIR: {ELIXIR}");
+                drawLine();
+
+                WriteLine("1 - ATTACK");
+                if (POTION > 0) { WriteLine("2 - USE POTION (30HP)"); }
+                if (ELIXIR > 0) { WriteLine("3 - USE ELIXIR (50HP)"); }
+                drawLine();
+
+                Write(Name); Write("# "); 
+                string choice = ReadLine();
+
+                if (choice == "1")
+                {
+                    enemyHP -= ATK;
+                    WriteLine($"{Name} dealt {ATK} damage to the {enemyName}.");
+                    if (enemyHP > 0)
+                    {
+                        HP -= enemyATK;
+                        WriteLine($"{enemyName} dealt {enemyATK} damage to the {Name}.");
+
+                    }
+
+                    Write(Name); Write("> ");
+                    ReadLine();
+
+                }
+                else if (choice == "2")
+                {
+                    if (POTION > 0)
+                    {
+                        POTION--;
+                        Heal(amount: 30);
+                        
+                        // Skip one move if player in Fight with enemy
+                        HP -= ATK;
+                        WriteLine($"{enemyName} dealt {enemyATK} damage to the {Name}.");
+                    }
+                    else { WriteLine("No potions!"); }
+
+                    Write(Name); Write("> ");
+                    ReadLine();
+                }
+                else if (choice == "3")
+                {
+                    if (ELIXIR > 0)
+                    {
+                        ELIXIR--;
+                        Heal(amount: 50);
+
+                        // Skip one move if player in Fight with enemy
+                        HP -= ATK;
+                        WriteLine($"{enemyName} dealt {enemyATK} damage to the {Name}.");
+                    }
+                    else { WriteLine("No elixirs!"); }
+
+                    Write(Name); Write("> ");
+                    ReadLine();
+                }
+                else
+                {
+
+                }
+
+                if (HP <= 0)
+                {
+                    WriteLine($"{enemyName} defeated {Name}...");
+                    drawLine();
+                    Fight = false;
+                    isPlay = false;
+                    isRunning = false;
+                    WriteLine("GAME OVER");
+
+                    Write(Name); Write("> ");
+                    ReadLine();
+                }
+
+                if (enemyHP <= 0)
+                {
+                    WriteLine($"{Name} defeated the {enemyName}!");
+                    drawLine();
+                    Fight = false;
+
+                    GOLD += enemyGold;
+                    WriteLine($"You've found {enemyGold} gold!");
+
+                    if (random.Next(0, 100) <= 30)
+                    {
+                        POTION++;
+                        WriteLine($"You've found a potion!");
+                    }
+                    else if (random.Next(0, 100) <= 20)
+                    {
+                        ELIXIR++;
+                        WriteLine($"You've found a elixir!");
+                    }
+
+
+                    Write(Name); Write("> ");
+                    ReadLine();
+                    Clear();
+                }
+
+
+            }
+
+
+            //Write(Name); Write("# ");
+            //ReadLine();
+        }
 
 
         static void Main(string[] args)
@@ -135,16 +298,35 @@ namespace ASCII_CLI_IdleRPG
                         WriteLine("There is some rules, there's nothing , there's nothing...");
                         isRules = false;
 
+                        //Write(Name); Write("> ");
+                        //ReadLine();
+
+                        //isMenu = false;
+                        //isPlay = true;
+
+
+                        // FIXME: Implement quit to menu, 1. (read rules) > (enter) see # (and 0. QUIT) when typed 0 immediately go to main menu
+
                         Write(Name); Write("> ");
                         ReadLine();
 
-                        // FIXME: Implement quit to menu, 1. (read rules) > (enter) see # (and 0. QUIT) when typed 0 immediately go to main menu
                         drawLine();
                         WriteLine("0. QUIT TO MENU! ");
                         drawLine();
 
                         Write(Name); Write("# ");
-                        string dest = Convert.ToString(ReadLine());
+                        string Destination = Convert.ToString(ReadLine());
+                        if (Destination == "0")
+                        {
+                            isPlay = false;
+                            isMenu = true;
+                            isRules = false;
+                            Clear();
+                            startPageInfo();
+                        }
+
+                        //Write(Name); Write("# ");
+                        //string dest = Convert.ToString(ReadLine());
 
                         //Write(Name); Write("> ");
                         //ReadLine();
@@ -152,13 +334,13 @@ namespace ASCII_CLI_IdleRPG
                         //Write(Name); Write("# ");
                         //string dest = Convert.ToString(ReadLine());
 
-                        if (dest == "0")
-                        {
-                            isPlay = false;
-                            isMenu = true;
-                            isRules = false;
-                            break;
-                        }
+                        //if (dest == "0")
+                        //{
+                        //    isPlay = false;
+                        //    isMenu = true;
+                        //    isRules = false;
+                        //    break;
+                        //}
                     }
                     else
                     {
@@ -191,7 +373,7 @@ namespace ASCII_CLI_IdleRPG
                                 using (StreamReader file = new StreamReader("load.txt"))
                                 {
                                     string[] load_list = file.ReadToEnd().Split('\n');
-
+                                    // TODO: Implement reading Corrupt save file exception!
                                     //if (load_list.Length == 9)
                                     //{
                                         Name = load_list[0].TrimEnd();
@@ -201,7 +383,7 @@ namespace ASCII_CLI_IdleRPG
                                         ELIXIR = int.Parse(load_list[4].TrimEnd());
                                         GOLD = int.Parse(load_list[5].TrimEnd());
                                         CoordinateX = int.Parse(load_list[6].TrimEnd());
-                                        CoordinateY = int.Parse(load_list[6].TrimEnd());
+                                        CoordinateY = int.Parse(load_list[7].TrimEnd());
                                         IsKey = bool.Parse(load_list[8].TrimEnd());
 
                                         Clear();
@@ -245,97 +427,155 @@ namespace ASCII_CLI_IdleRPG
                 {
                     // FIXME: When isRules and isLoaded game returns this isPlay loop by displaying Stats of Player
                     save();  // autosave
-
                     Clear();
-                    drawLine();
-                    WriteLine($"LOCATION: {NameOfTile}");
-                    drawLine();
-                    WriteLine(
-                        $"NAME:     {Name}\n" +
-                        $"HP:       {HP}/{HPMAX}\n" +
-                        $"ATK:      {ATK} \n" +
-                        $"POTIONS:  {POTION} \n" +
-                        $"ELIXIRS:  {ELIXIR} \n" +
-                        $"GOLD:     {GOLD} "
-                    );
-                    drawLine();
-                    WriteLine($"COORDINATES: {CoordinateX}, {CoordinateY}");
-                    drawLine();
-                    WriteLine("0. SAVE AND QUIT! ");
-                    if ( CoordinateY > 0)
+
+                    // Spawn enemyes Logic
+                    //if (!Standing)
+                    //{
+                    //    var currentTile = (dynamic)Biom[Map[CoordinateY, CoordinateX]];
+                    //    if (currentTile.enemy && random.Next(0, 100) < 30)
+                    //    {
+                    //        Fight = true;
+                    //        Battle();
+                    //    }
+                    //}
+
+                    bool enemySpawn = (bool)Biom[Map[CoordinateY, CoordinateX]]["enemy"];
+
+                    if (!Standing)
                     {
-                        WriteLine("1. NORTH");
+                        if (enemySpawn)
+                        {
+                            if (random.Next(0, 100) <= 30)
+                            {
+                                Fight = true;
+                                Battle();
+                            }
+                        }
                     }
-                    if ( CoordinateX < LengthX)
-                    {
-                        WriteLine("2. EAST");
-                    }
-                    if (CoordinateY < LengthY)
-                    {
-                        WriteLine("3. SOUTH");
-                    }
-                    if (CoordinateX > 0)
-                    {
-                        WriteLine("4. WEST");
-                    }
-                    drawLine();
+
+                    if (isPlay)
+                    {                    
+                        // Player Information
+                        drawLine();
+                        WriteLine($"LOCATION: {Biom[Map[CoordinateY, CoordinateX]]["text"]}");
+                        drawLine();
+                        WriteLine(
+                            $"NAME:     {Name}\n" +
+                            $"HP:       {HP}/{HPMAX}\n" +
+                            $"ATK:      {ATK} \n" +
+                            $"POTIONS:  {POTION} \n" +
+                            $"ELIXIRS:  {ELIXIR} \n" +
+                            $"GOLD:     {GOLD} "
+                        );
+                        drawLine();
+                        WriteLine($"COORDINATES: {CoordinateX}, {CoordinateY}");
+                        drawLine();
+
+                        // Action button for player
+                        WriteLine("0 - SAVE AND QUIT! ");
+                        if ( CoordinateY > 0 ) { WriteLine("1 - NORTH"); }
+                        if ( CoordinateX < LengthX ) { WriteLine("2 - EAST"); }
+                        if ( CoordinateY < LengthY ){ WriteLine("3 - SOUTH"); }
+                        if ( CoordinateX > 0 ) { WriteLine("4 - WEST"); }
+                        if ( POTION > 0 ) { WriteLine("5 - USE POTION (30HP)"); }
+                        if ( ELIXIR > 0 ) { WriteLine("6 - USE ELIXIR (50HP)"); }
+                        drawLine();
 
 
-                    Write(Name); Write("# ");
-                    string Destination = Convert.ToString(ReadLine());
-                    if (Destination == "0")
-                    {
-                        isPlay = false;
-                        isMenu = true;
-                        isRules = false;
-                        save();
-                        Clear();
-                        startPageInfo();
-                    }
-                    else if (Destination == "1")
-                    {
-                        if (CoordinateY > 0)
+                        Write(Name); Write("# ");
+                        string Destination = Convert.ToString(ReadLine());
+                        if (Destination == "0")
                         {
-                            CoordinateY -= 1;
+                            isPlay = false;
+                            isMenu = true;
+                            isRules = false;
+                            save();
+                            Clear();
+                            startPageInfo();
+                        }
+                        else if (Destination == "1")
+                        {
+                            if (CoordinateY > 0)
+                            {
+                                CoordinateY -= 1;
+                                Standing = false;
+                            }
+
+                            //if (CoordinateY > 0)
+                            //{
+                            //    CoordinateY -= 1;
+                            //}
+                            //else
+                            //{
+                            //    CoordinateY = LengthY;
+                            //}
+                        }
+                        else if (Destination == "2")
+                        {
+                            if (CoordinateX < LengthX)
+                            {
+                                CoordinateX += 1;
+                                Standing = false;
+                            }
+                        }
+                        else if (Destination == "3")
+                        {
+                            if (CoordinateY < LengthY)
+                            {
+                                CoordinateY += 1;
+                                Standing = false;
+                            }
+                            //if (CoordinateY < LengthY)
+                            //{
+                            //    CoordinateY += 1;
+                            //}
+                            //else
+                            //{
+                            //    CoordinateY = 0;
+                            //}
+                        }
+                        else if (Destination == "4")
+                        {
+                            if (CoordinateX > 0)
+                            {
+                                CoordinateX -= 1;
+                                Standing = false;
+                            }
+                        }
+                        else if (Destination == "5")
+                        {
+                            if (POTION > 0)
+                            {
+                                POTION--;
+                                Heal(amount: 30);
+                            }
+                            else { WriteLine("No potions!"); }
+
+                            Write(Name); Write("> ");
+                            ReadLine();
+
+                            Standing = true;
+                        }
+                        else if (Destination == "6")
+                        {
+                            if (ELIXIR > 0)
+                            {
+                                ELIXIR--;
+                                Heal(amount: 50);
+                            }
+                            else { WriteLine("No elixirs!"); }
+
+                            Write(Name); Write("> ");
+                            ReadLine();
+
+                            Standing = true;
+                        }
+                        else
+                        {
+                            Standing = true;
                         }
 
-                        //if (CoordinateY > 0)
-                        //{
-                        //    CoordinateY -= 1;
-                        //}
-                        //else
-                        //{
-                        //    CoordinateY = LengthY;
-                        //}
-                    }
-                    else if (Destination == "2")
-                    {
-                        if (CoordinateX < LengthX)
-                        {
-                            CoordinateX += 1;
-                        }
-                    }
-                    else if (Destination == "3")
-                    {
-                        if (CoordinateY < LengthY)
-                        {
-                            CoordinateY += 1;
-                        }
-                        //if (CoordinateY < LengthY)
-                        //{
-                        //    CoordinateY += 1;
-                        //}
-                        //else
-                        //{
-                        //    CoordinateY = 0;
-                        //}
-                    }
-                    else if (Destination == "4")
-                    {
-                        if (CoordinateX > 0)
-                        {
-                            CoordinateX -= 1;
-                        }
                     }
                 }
             }
