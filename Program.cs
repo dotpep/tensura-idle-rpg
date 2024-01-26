@@ -16,13 +16,20 @@ namespace ASCII_CLI_IdleRPG
         static bool isPlay = false;
         static bool isRules = false;
 
-        static short choice;
+        //static short choice;
+        static int choice;
+        //static char choice;
+        //static string choice;
 
         // Battle logic
         static bool Fight = false;
         static bool Standing = true;
 
         static Random random = new Random();
+
+        static bool shopBuy = false;
+        static bool speakMayor = false;
+        static bool bossEnemy = false;
 
         // character info
         //static string name = "hero";
@@ -31,11 +38,11 @@ namespace ASCII_CLI_IdleRPG
         {
             public string Name { get; set; }
             public int HP { get; set; } = 50;
-            public int HPMAX { get; private set; } = 500;
+            public int HPMAX { get; private set; } = 50;
             public int ATK { get; set; } = 3;
-            public int POTION { get; set; } = 10;
-            public int ELIXIR { get; set; } = 3;
-            public int GOLD { get; set; } = 0;
+            public int POTION { get; set; } = 1;
+            public int ELIXIR { get; set; } = 0;
+            public int GOLD { get; set; } = 7;
             public int CoordinateX { get; set; } = 0;
             public int CoordinateY { get; set; } = 0;
             public bool IsKey { get; set; } = false;
@@ -56,8 +63,8 @@ namespace ASCII_CLI_IdleRPG
 
 
         // Maps 2d array or matix
-        static string[,] Map =
-        {   // columns (X)   // x = 0    // x = 1    // x = 2   // x = 3   // x = 4   // x = 5     // x = 6        // rows (Y)
+        static string[,] Map = //columns (X)
+        {   // x = 0    // x = 1    // x = 2   // x = 3   // x = 4   // x = 5     // x = 6         // rows (Y)
             { "plains",  "plains",  "plains",  "plains",  "forest",  "mountain",  "cave" },        // y = 0
             { "forest",  "forest",  "forest",  "forest",  "forest",  "hills",     "mountain" },    // y = 1
             { "forest",  "fields",  "bridge",  "plains",  "hills",   "forest",    "hills" },       // y = 2
@@ -118,7 +125,7 @@ namespace ASCII_CLI_IdleRPG
             WriteLine("xX--------------------xX");
         }
 
-        static void save()
+        static void Save()
         {
             string[] list = new string[]
             {
@@ -133,6 +140,8 @@ namespace ASCII_CLI_IdleRPG
                 IsKey.ToString()
             };
 
+            // TODO: Save this file in current project directory not in bin/Debug/load.txt
+            // NOTE: there may be use interface and save it another data formats like plain text, json, database like sqlite for executable game
             using (StreamWriter file = new StreamWriter("load.txt"))
             {
                 foreach (string item in list)
@@ -152,11 +161,14 @@ namespace ASCII_CLI_IdleRPG
 
         static void Battle()
         {
+            string enemyName;
 
-            WriteLine("Fight happening!");
-
-            int randomEnemyIndex = random.Next(EnemyList.Count);
-            string enemyName = EnemyList[randomEnemyIndex];
+            if (!bossEnemy)
+            {
+                int randomEnemyIndex = random.Next(EnemyList.Count);
+                enemyName = EnemyList[randomEnemyIndex];
+            }
+            else { enemyName = "Dragon"; }
 
             int enemyHP = Mobs[enemyName]["hp"];
             int enemyHPMax = enemyHP;
@@ -268,6 +280,14 @@ namespace ASCII_CLI_IdleRPG
                         WriteLine($"You've found a elixir!");
                     }
 
+                    if (enemyName == "Dragon")
+                    {
+                        WriteLine("Congratulations, you've finished the game!");
+                        bossEnemy = false;
+                        isPlay = false;
+                        isRunning = false;
+                    }
+
 
                     Write(Name); Write("> ");
                     ReadLine();
@@ -276,12 +296,154 @@ namespace ASCII_CLI_IdleRPG
 
 
             }
-
-
-            //Write(Name); Write("# ");
-            //ReadLine();
         }
 
+        static void Shop()
+        {
+            while (shopBuy)
+            {
+                Clear();
+                drawLine();
+                WriteLine("Welcome to the shop!");
+                drawLine();
+                WriteLine($"GOLD: {GOLD}");
+                WriteLine($"POTIONS: {POTION}");
+                WriteLine($"ELIXIRS: {ELIXIR}");
+                WriteLine($"ATK: {ATK}");
+                drawLine();
+                WriteLine("1 - BUY POTION (30 HP) - 5 GOLD");
+                WriteLine("2 - BUY ELIXIR (MAXHP) - 8 GOLD");
+                WriteLine("3 - UPGRADE WEAPON (+2ATK) - 10 GOLD");
+                WriteLine("4 - LEAVE");
+                drawLine();
+
+                Write(Name); Write("# "); 
+                string choice = ReadLine();
+
+                if (choice == "1")
+                {
+                    if (GOLD >= 5)
+                    {
+                        POTION++;
+                        GOLD -= 5;
+                        WriteLine("You've bought a potion!");
+                    }
+                    else { WriteLine("Not enough gold!"); }
+
+                    Write(Name); Write("> ");
+                    ReadLine();
+                }
+
+                else if (choice == "2")
+                {
+                    if (GOLD >= 8)
+                    {
+                        ELIXIR++;
+                        GOLD -= 8;
+                        WriteLine("You've bought a elixir!");
+                    }
+                    else { WriteLine("Not enough gold!"); }
+
+                    Write(Name); Write("> ");
+                    ReadLine();
+                }
+                else if (choice == "3")
+                {
+                    if (GOLD >= 10)
+                    {
+                        ATK += 2;
+                        GOLD -= 10;
+                        WriteLine("You've upgraded your weapon!");
+                    }
+                    else { WriteLine("Not enough gold!"); }
+
+                    Write(Name); Write("> ");
+                    ReadLine();
+                }
+
+                else if (choice == "4") { shopBuy = false; }
+
+
+            }
+        }
+
+        static void Mayor()
+        {
+            while (speakMayor)
+            {
+                Clear();
+                drawLine();
+                WriteLine($"Hello there, {Name}!");
+                if (ATK < 10)
+                {
+                    WriteLine("You're not strong enough to face the dragon yet! Keep practicing and come back later!");
+                    IsKey = false;
+                }
+                else
+                {
+                    WriteLine("You might want to take on the dragon now! Take this key but be careful with the beast!");
+                    //drawLine();
+                    //WriteLine("0 - LEAVE");
+                    //WriteLine("1 - FIGHT");
+                    //drawLine();
+
+                    //Write(Name); Write("# ");
+                    //string choice = ReadLine();
+
+                    //if (choice == "0") { IsKey = false; }
+
+                    IsKey = true;
+                }
+
+                drawLine();
+                WriteLine("1 - LEAVE");
+                drawLine();
+
+                Write(Name); Write("# ");
+                string choice = ReadLine();
+
+                if (choice == "1")
+                {
+                    speakMayor = false;
+                }
+
+            }
+        }
+
+        static void Cave()
+        {
+            while (bossEnemy)
+            {
+                Clear();
+                drawLine();
+                WriteLine("Here lies the cave of the dragon. What will you do?");
+                drawLine();
+
+                if (IsKey)
+                {
+                    WriteLine("1 - USE KEY");
+                }
+                WriteLine("2 - TURN BACK");
+                drawLine();
+
+                Write(Name); Write("# ");
+                string choice = ReadLine();
+
+                if (choice == "1")
+                {
+                    if (IsKey)
+                    {
+                        Fight = true;
+                        Battle();
+                    }
+                }
+                else if (choice == "2")
+                {
+                    bossEnemy = false;
+                }
+
+            }
+        }
 
         static void Main(string[] args)
         {
@@ -298,62 +460,22 @@ namespace ASCII_CLI_IdleRPG
                         WriteLine("There is some rules, there's nothing , there's nothing...");
                         isRules = false;
 
-                        //Write(Name); Write("> ");
-                        //ReadLine();
-
-                        //isMenu = false;
-                        //isPlay = true;
-
-
-                        // FIXME: Implement quit to menu, 1. (read rules) > (enter) see # (and 0. QUIT) when typed 0 immediately go to main menu
-
                         Write(Name); Write("> ");
                         ReadLine();
 
-                        drawLine();
-                        WriteLine("0. QUIT TO MENU! ");
-                        drawLine();
-
-                        Write(Name); Write("# ");
-                        string Destination = Convert.ToString(ReadLine());
-                        if (Destination == "0")
-                        {
-                            isPlay = false;
-                            isMenu = true;
-                            isRules = false;
-                            Clear();
-                            startPageInfo();
-                        }
-
-                        //Write(Name); Write("# ");
-                        //string dest = Convert.ToString(ReadLine());
-
-                        //Write(Name); Write("> ");
-                        //ReadLine();
-
-                        //Write(Name); Write("# ");
-                        //string dest = Convert.ToString(ReadLine());
-
-                        //if (dest == "0")
-                        //{
-                        //    isPlay = false;
-                        //    isMenu = true;
-                        //    isRules = false;
-                        //    break;
-                        //}
+                        continue;
                     }
                     else
                     {
                         Write(Name); Write("# ");
-                        string input = ReadLine();
-                        bool valid = Int16.TryParse(input, out choice);
-                        while (!valid)
+                        string userInput = ReadLine();
+
+                        if (int.TryParse(userInput, out choice)) { }
+                        else
                         {
                             Clear();
                             startPageInfo();
-                            Write(Name); Write("# ");
-                            input = ReadLine();
-                            valid = Int16.TryParse(input, out choice);
+                            continue;
                         }
                     }
 
@@ -370,6 +492,7 @@ namespace ASCII_CLI_IdleRPG
                         case 2:
                             try
                             {
+                                // TODO: try to read and load this file in current project layer not in bin/Debug/load.txt
                                 using (StreamReader file = new StreamReader("load.txt"))
                                 {
                                     string[] load_list = file.ReadToEnd().Split('\n');
@@ -425,20 +548,8 @@ namespace ASCII_CLI_IdleRPG
                 }
                 while (isPlay)
                 {
-                    // FIXME: When isRules and isLoaded game returns this isPlay loop by displaying Stats of Player
-                    save();  // autosave
+                    Save();  // autosave
                     Clear();
-
-                    // Spawn enemyes Logic
-                    //if (!Standing)
-                    //{
-                    //    var currentTile = (dynamic)Biom[Map[CoordinateY, CoordinateX]];
-                    //    if (currentTile.enemy && random.Next(0, 100) < 30)
-                    //    {
-                    //        Fight = true;
-                    //        Battle();
-                    //    }
-                    //}
 
                     bool enemySpawn = (bool)Biom[Map[CoordinateY, CoordinateX]]["enemy"];
 
@@ -446,7 +557,7 @@ namespace ASCII_CLI_IdleRPG
                     {
                         if (enemySpawn)
                         {
-                            if (random.Next(0, 100) <= 30)
+                            if (random.Next(0, 100) <= 0)
                             {
                                 Fight = true;
                                 Battle();
@@ -480,6 +591,11 @@ namespace ASCII_CLI_IdleRPG
                         if ( CoordinateX > 0 ) { WriteLine("4 - WEST"); }
                         if ( POTION > 0 ) { WriteLine("5 - USE POTION (30HP)"); }
                         if ( ELIXIR > 0 ) { WriteLine("6 - USE ELIXIR (50HP)"); }
+
+                        if (Map[CoordinateY, CoordinateX] == "shop" ||
+                            Map[CoordinateY, CoordinateX] == "mayor" ||
+                            Map[CoordinateY, CoordinateX] == "cave" ) { WriteLine("7 - ENTER"); }
+
                         drawLine();
 
 
@@ -490,7 +606,7 @@ namespace ASCII_CLI_IdleRPG
                             isPlay = false;
                             isMenu = true;
                             isRules = false;
-                            save();
+                            Save();
                             Clear();
                             startPageInfo();
                         }
@@ -498,7 +614,7 @@ namespace ASCII_CLI_IdleRPG
                         {
                             if (CoordinateY > 0)
                             {
-                                CoordinateY -= 1;
+                                CoordinateY--;
                                 Standing = false;
                             }
 
@@ -515,7 +631,7 @@ namespace ASCII_CLI_IdleRPG
                         {
                             if (CoordinateX < LengthX)
                             {
-                                CoordinateX += 1;
+                                CoordinateX++;
                                 Standing = false;
                             }
                         }
@@ -523,7 +639,7 @@ namespace ASCII_CLI_IdleRPG
                         {
                             if (CoordinateY < LengthY)
                             {
-                                CoordinateY += 1;
+                                CoordinateY++;
                                 Standing = false;
                             }
                             //if (CoordinateY < LengthY)
@@ -539,7 +655,7 @@ namespace ASCII_CLI_IdleRPG
                         {
                             if (CoordinateX > 0)
                             {
-                                CoordinateX -= 1;
+                                CoordinateX--;
                                 Standing = false;
                             }
                         }
@@ -570,6 +686,24 @@ namespace ASCII_CLI_IdleRPG
                             ReadLine();
 
                             Standing = true;
+                        }
+                        else if (Destination == "7")
+                        {
+                            if (Map[CoordinateY, CoordinateX] == "shop")
+                            {
+                                shopBuy = true;
+                                Shop();
+                            }
+                            else if (Map[CoordinateY, CoordinateX] == "mayor")
+                            {
+                                speakMayor = true;
+                                Mayor();
+                            }
+                            else if (Map[CoordinateY, CoordinateX] == "cave")
+                            {
+                                bossEnemy = true;
+                                Cave();
+                            }
                         }
                         else
                         {
