@@ -27,12 +27,10 @@ namespace ASCII_CLI_IdleRPG
 
         static Random random = new Random();
 
+        // Advanture logic
         static bool shopBuy = false;
         static bool speakMayor = false;
         static bool bossEnemy = false;
-
-        // character info
-        //static string name = "hero";
 
         public class CharacterStats
         {
@@ -90,15 +88,6 @@ namespace ASCII_CLI_IdleRPG
             {"hills",    new Dictionary<string, object> { {"text", "HILLS"},        {"enemy", true}  }},
         };
 
-        static string CurrentTile = Map[CoordinateY,CoordinateX];
-        static object NameOfTile = Biom[CurrentTile]["text"];
-        static object EnemyTile = Biom[CurrentTile]["enemy"];
-
-        // dict object string
-        static string CurrentBiomText = (string)Biom[Map[CoordinateY, CoordinateX]]["text"];
-        // dict object boolean
-        static bool CurrentBiomSpawnEnemy = (bool)Biom[Map[CoordinateY, CoordinateX]]["enemy"];
-
 
         static List<string> EnemyList = new List<string>() { "Goblin", "Orc", "Slime" };
 
@@ -112,6 +101,20 @@ namespace ASCII_CLI_IdleRPG
 
         static void startPageInfo()
         {
+            WriteLine(@"
+▄█▄    █    ▄█     ▄█ ██▄   █     ▄███▄                   
+█▀ ▀▄  █    ██     ██ █  █  █     █▀   ▀                  
+█   ▀  █    ██     ██ █   █ █     ██▄▄                    
+█▄  ▄▀ ███▄ ▐█     ▐█ █  █  ███▄  █▄   ▄▀                 
+▀███▀      ▀ ▐      ▐ ███▀      ▀ ▀███▀                   
+▄█    ▄▄▄▄▄   ▄███▄   █  █▀ ██   ▄█     █▄▄▄▄ █ ▄▄    ▄▀  
+██   █     ▀▄ █▀   ▀  █▄█   █ █  ██     █  ▄▀ █   █ ▄▀    
+██ ▄  ▀▀▀▀▄   ██▄▄    █▀▄   █▄▄█ ██     █▀▀▌  █▀▀▀  █ ▀▄  
+▐█  ▀▄▄▄▄▀    █▄   ▄▀ █  █  █  █ ▐█     █  █  █     █   █ 
+ ▐            ▀███▀     █      █  ▐       █    █     ███  
+                       ▀      █          ▀      ▀         
+                             ▀                            
+            ");
             drawLine();
             WriteLine("1. NEW GAME");
             WriteLine("2. LOAD GAME");
@@ -192,7 +195,7 @@ namespace ASCII_CLI_IdleRPG
                 if (ELIXIR > 0) { WriteLine("3 - USE ELIXIR (50HP)"); }
                 drawLine();
 
-                Write(Name); Write("# "); 
+                Write($"{Name}# ");
                 string choice = ReadLine();
 
                 if (choice == "1")
@@ -206,7 +209,7 @@ namespace ASCII_CLI_IdleRPG
 
                     }
 
-                    Write(Name); Write("> ");
+                    Write($"{Name}> ");
                     ReadLine();
 
                 }
@@ -218,12 +221,12 @@ namespace ASCII_CLI_IdleRPG
                         Heal(amount: 30);
                         
                         // Skip one move if player in Fight with enemy
-                        HP -= ATK;
+                        HP -= enemyATK;
                         WriteLine($"{enemyName} dealt {enemyATK} damage to the {Name}.");
                     }
                     else { WriteLine("No potions!"); }
 
-                    Write(Name); Write("> ");
+                    Write($"{Name}> ");
                     ReadLine();
                 }
                 else if (choice == "3")
@@ -234,17 +237,13 @@ namespace ASCII_CLI_IdleRPG
                         Heal(amount: 50);
 
                         // Skip one move if player in Fight with enemy
-                        HP -= ATK;
+                        HP -= enemyATK;
                         WriteLine($"{enemyName} dealt {enemyATK} damage to the {Name}.");
                     }
                     else { WriteLine("No elixirs!"); }
 
-                    Write(Name); Write("> ");
+                    Write($"{Name}> ");
                     ReadLine();
-                }
-                else
-                {
-
                 }
 
                 if (HP <= 0)
@@ -256,7 +255,7 @@ namespace ASCII_CLI_IdleRPG
                     isRunning = false;
                     WriteLine("GAME OVER");
 
-                    Write(Name); Write("> ");
+                    Write($"{Name}> ");
                     ReadLine();
                 }
 
@@ -289,7 +288,7 @@ namespace ASCII_CLI_IdleRPG
                     }
 
 
-                    Write(Name); Write("> ");
+                    Write($"{Name}> ");
                     ReadLine();
                     Clear();
                 }
@@ -317,7 +316,7 @@ namespace ASCII_CLI_IdleRPG
                 WriteLine("4 - LEAVE");
                 drawLine();
 
-                Write(Name); Write("# "); 
+                Write($"{Name}# ");
                 string choice = ReadLine();
 
                 if (choice == "1")
@@ -330,7 +329,7 @@ namespace ASCII_CLI_IdleRPG
                     }
                     else { WriteLine("Not enough gold!"); }
 
-                    Write(Name); Write("> ");
+                    Write($"{Name}> ");
                     ReadLine();
                 }
 
@@ -344,7 +343,7 @@ namespace ASCII_CLI_IdleRPG
                     }
                     else { WriteLine("Not enough gold!"); }
 
-                    Write(Name); Write("> ");
+                    Write($"{Name}> ");
                     ReadLine();
                 }
                 else if (choice == "3")
@@ -357,7 +356,7 @@ namespace ASCII_CLI_IdleRPG
                     }
                     else { WriteLine("Not enough gold!"); }
 
-                    Write(Name); Write("> ");
+                    Write($"{Name}> ");
                     ReadLine();
                 }
 
@@ -382,16 +381,6 @@ namespace ASCII_CLI_IdleRPG
                 else
                 {
                     WriteLine("You might want to take on the dragon now! Take this key but be careful with the beast!");
-                    //drawLine();
-                    //WriteLine("0 - LEAVE");
-                    //WriteLine("1 - FIGHT");
-                    //drawLine();
-
-                    //Write(Name); Write("# ");
-                    //string choice = ReadLine();
-
-                    //if (choice == "0") { IsKey = false; }
-
                     IsKey = true;
                 }
 
@@ -399,7 +388,7 @@ namespace ASCII_CLI_IdleRPG
                 WriteLine("1 - LEAVE");
                 drawLine();
 
-                Write(Name); Write("# ");
+                Write($"{Name}# ");
                 string choice = ReadLine();
 
                 if (choice == "1")
@@ -426,7 +415,7 @@ namespace ASCII_CLI_IdleRPG
                 WriteLine("2 - TURN BACK");
                 drawLine();
 
-                Write(Name); Write("# ");
+                Write($"{Name}# ");
                 string choice = ReadLine();
 
                 if (choice == "1")
@@ -445,7 +434,13 @@ namespace ASCII_CLI_IdleRPG
             }
         }
 
+
         static void Main(string[] args)
+        {
+            MainGameManager();
+        }
+
+        static void MainGameManager()
         {
             Clear();
             startPageInfo();
@@ -457,17 +452,17 @@ namespace ASCII_CLI_IdleRPG
                     if (isRules)
                     {
                         Clear();
-                        WriteLine("There is some rules, there's nothing , there's nothing...");
+                        WriteLine("There is some rules, there's nothing , there's nothing yet...");
                         isRules = false;
 
-                        Write(Name); Write("> ");
+                        Write($"{Name}> ");
                         ReadLine();
 
                         continue;
                     }
                     else
                     {
-                        Write(Name); Write("# ");
+                        Write($"{Name}# ");
                         string userInput = ReadLine();
 
                         if (int.TryParse(userInput, out choice)) { }
@@ -512,7 +507,7 @@ namespace ASCII_CLI_IdleRPG
                                         Clear();
                                         WriteLine("Welcome back, " + Name + "!");
 
-                                        Write(Name); Write("> "); ReadLine();
+                                        Write($"{Name}> ");
 
                                         isMenu = false;
                                         isPlay = true;
@@ -527,7 +522,7 @@ namespace ASCII_CLI_IdleRPG
                             catch (IOException)
                             {
                                 WriteLine("No loadable save file!");
-                                Write("> "); ReadLine();
+                                Write($"{Name}> ");
                             }
 
 
@@ -551,13 +546,14 @@ namespace ASCII_CLI_IdleRPG
                     Save();  // autosave
                     Clear();
 
-                    bool enemySpawn = (bool)Biom[Map[CoordinateY, CoordinateX]]["enemy"];
+                    bool enemySpawn = (bool)Biom[Map[CoordinateY,CoordinateX]]["enemy"];
+                    string mapLocation = (string)Biom[Map[CoordinateY,CoordinateX]]["text"];
 
                     if (!Standing)
                     {
                         if (enemySpawn)
                         {
-                            if (random.Next(0, 100) <= 0)
+                            if (random.Next(0, 100) <= 30)
                             {
                                 Fight = true;
                                 Battle();
@@ -569,7 +565,7 @@ namespace ASCII_CLI_IdleRPG
                     {                    
                         // Player Information
                         drawLine();
-                        WriteLine($"LOCATION: {Biom[Map[CoordinateY, CoordinateX]]["text"]}");
+                        WriteLine($"LOCATION: {mapLocation}");
                         drawLine();
                         WriteLine(
                             $"NAME:     {Name}\n" +
@@ -599,7 +595,7 @@ namespace ASCII_CLI_IdleRPG
                         drawLine();
 
 
-                        Write(Name); Write("# ");
+                        Write($"{Name}# ");
                         string Destination = Convert.ToString(ReadLine());
                         if (Destination == "0")
                         {
@@ -617,15 +613,6 @@ namespace ASCII_CLI_IdleRPG
                                 CoordinateY--;
                                 Standing = false;
                             }
-
-                            //if (CoordinateY > 0)
-                            //{
-                            //    CoordinateY -= 1;
-                            //}
-                            //else
-                            //{
-                            //    CoordinateY = LengthY;
-                            //}
                         }
                         else if (Destination == "2")
                         {
@@ -642,14 +629,6 @@ namespace ASCII_CLI_IdleRPG
                                 CoordinateY++;
                                 Standing = false;
                             }
-                            //if (CoordinateY < LengthY)
-                            //{
-                            //    CoordinateY += 1;
-                            //}
-                            //else
-                            //{
-                            //    CoordinateY = 0;
-                            //}
                         }
                         else if (Destination == "4")
                         {
@@ -668,7 +647,7 @@ namespace ASCII_CLI_IdleRPG
                             }
                             else { WriteLine("No potions!"); }
 
-                            Write(Name); Write("> ");
+                            Write($"{Name}> ");
                             ReadLine();
 
                             Standing = true;
@@ -682,7 +661,7 @@ namespace ASCII_CLI_IdleRPG
                             }
                             else { WriteLine("No elixirs!"); }
 
-                            Write(Name); Write("> ");
+                            Write($"{Name}> ");
                             ReadLine();
 
                             Standing = true;

@@ -1,17 +1,38 @@
-# ASCII CLI Idle-RPG
+# Tensura Idle-RPG
 
-This is simple Command Line Interface Text-based Idle RPG game.
-Written in C# and .NET framework using OOP.
+> An Anime game fandom/franchise: "That Time I Got Reincarnated as a Slime" or just Satoru from Japan that reincornated to Slime, Isekai.
+
+This is ASCII CLI Text-based Idle Tensura RPG game.
+Written in C# and .NET framework and Using *Best Practices (not yet).
+
+## Demonstration
 
 ## Features
 
-- Main Menu
-- Progress Saving
+- 
+
+## Release
+
+- v1
+
+- About game
+- Rules
+
+### Install Game .exe
+
+### How to play?
+
+### What's next 
+
+> There is some list of idea
+
+- Ability/Skills
 
 ## TODO 
 
-- apply Clean Code and Architecture: OOP, SOLID, patterns
-- scaling to Telegram/Discord Bots, Web, Engine
+- apply Clean Code and Architecture: OOP, SOLID, Patterns, ECS, MVC, Dependency Injection, State pattern
+- scaling to Telegram/Discord Bots, Web, Engine, WPF
+- refactoring into modular structure and OOP
 
 ### TODO: Features
 
@@ -21,10 +42,14 @@ Written in C# and .NET framework using OOP.
 - [x] Enemies
 - [x] Battle
 - [x] Potions
-- [ ] Shop
-- [ ] NPC
-- [ ] Boss Fight
-
+- [x] Shop
+- [x] NPC
+- [x] Boss Fight
+- [ ] Auto Battle
+- [ ] Refactoring
+- [ ] Migrate project to .NET 7.0 version
+- [ ] Add information about game and demo to README
+- [ ] Release v1 game-executable to GitHub
 
 ### Requirements
 
@@ -37,7 +62,7 @@ Written in C# and .NET framework using OOP.
 - Abstract, abstract class
 - Interface 
 
-## Getting Started
+## Getting Started to Contribute
 
 ### Prerequisites
 

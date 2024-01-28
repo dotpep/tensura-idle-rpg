@@ -1,7 +1,0 @@
-D:\Programming\Pet_project\game\cli-game\ASCII-CLI-IdleRPG\bin\Debug\ASCII-CLI-IdleRPG.exe.config
-D:\Programming\Pet_project\game\cli-game\ASCII-CLI-IdleRPG\bin\Debug\ASCII-CLI-IdleRPG.exe
-D:\Programming\Pet_project\game\cli-game\ASCII-CLI-IdleRPG\bin\Debug\ASCII-CLI-IdleRPG.pdb
-D:\Programming\Pet_project\game\cli-game\ASCII-CLI-IdleRPG\obj\Debug\ASCII-CLI-IdleRPG.csproj.AssemblyReference.cache
-D:\Programming\Pet_project\game\cli-game\ASCII-CLI-IdleRPG\obj\Debug\ASCII-CLI-IdleRPG.csproj.CoreCompileInputs.cache
-D:\Programming\Pet_project\game\cli-game\ASCII-CLI-IdleRPG\obj\Debug\ASCII-CLI-IdleRPG.exe
-D:\Programming\Pet_project\game\cli-game\ASCII-CLI-IdleRPG\obj\Debug\ASCII-CLI-IdleRPG.pdb
