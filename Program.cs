@@ -101,25 +101,26 @@ namespace ASCII_CLI_IdleRPG
 
         static void startPageInfo()
         {
-            WriteLine(@"
-▄█▄    █    ▄█     ▄█ ██▄   █     ▄███▄                   
-█▀ ▀▄  █    ██     ██ █  █  █     █▀   ▀                  
-█   ▀  █    ██     ██ █   █ █     ██▄▄                    
-█▄  ▄▀ ███▄ ▐█     ▐█ █  █  ███▄  █▄   ▄▀                 
-▀███▀      ▀ ▐      ▐ ███▀      ▀ ▀███▀                   
-▄█    ▄▄▄▄▄   ▄███▄   █  █▀ ██   ▄█     █▄▄▄▄ █ ▄▄    ▄▀  
-██   █     ▀▄ █▀   ▀  █▄█   █ █  ██     █  ▄▀ █   █ ▄▀    
-██ ▄  ▀▀▀▀▄   ██▄▄    █▀▄   █▄▄█ ██     █▀▀▌  █▀▀▀  █ ▀▄  
-▐█  ▀▄▄▄▄▀    █▄   ▄▀ █  █  █  █ ▐█     █  █  █     █   █ 
- ▐            ▀███▀     █      █  ▐       █    █     ███  
-                       ▀      █          ▀      ▀         
-                             ▀                            
-            ");
+            WriteLine(@"   ▄▄▄▄▀ ▄███▄      ▄      ▄▄▄▄▄   ▄   █▄▄▄▄ ██       
+▀▀▀ █    █▀   ▀      █    █     ▀▄  █  █  ▄▀ █ █      
+    █    ██▄▄    ██   █ ▄  ▀▀▀▀▄ █   █ █▀▀▌  █▄▄█     
+   █     █▄   ▄▀ █ █  █  ▀▄▄▄▄▀  █   █ █  █  █  █     
+  ▀      ▀███▀   █  █ █          █▄ ▄█   █      █     
+                 █   ██           ▀▀▀   ▀      █      
+                                              ▀       
+▄█ ██▄   █     ▄███▄       █▄▄▄▄ █ ▄▄    ▄▀           
+██ █  █  █     █▀   ▀      █  ▄▀ █   █ ▄▀             
+██ █   █ █     ██▄▄        █▀▀▌  █▀▀▀  █ ▀▄           
+▐█ █  █  ███▄  █▄   ▄▀     █  █  █     █   █          
+ ▐ ███▀      ▀ ▀███▀         █    █     ███           
+                            ▀      ▀                  ");
             drawLine();
             WriteLine("1. NEW GAME");
             WriteLine("2. LOAD GAME");
             WriteLine("3. RULES");
             WriteLine("4. QUIT GAME");
+            drawLine();
+            WriteLine("Play by typing choosen options like 1 and click Enter");
             drawLine();
         }
 
@@ -437,6 +438,8 @@ namespace ASCII_CLI_IdleRPG
 
         static void Main(string[] args)
         {
+            Title = "Tensura Idle RPG";
+
             MainGameManager();
         }
 
@@ -452,7 +455,11 @@ namespace ASCII_CLI_IdleRPG
                     if (isRules)
                     {
                         Clear();
-                        WriteLine("There is some rules, there's nothing , there's nothing yet...");
+                        WriteLine(@"
+This is advanture RPG game that has an ending and you can try to beat the game.
+Mobs: Slime, Goblic, Orc and Final Secret Boss.
+Special place on Maps: Shop, Mayor, Curve.
+Items in Shop: heal Potion, upgrade ATK.");
                         isRules = false;
 
                         Write($"{Name}> ");

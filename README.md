@@ -1,26 +1,33 @@
 # Tensura Idle-RPG
 
-> An Anime game fandom/franchise: "That Time I Got Reincarnated as a Slime" or just Satoru from Japan that reincornated to Slime, Isekai.
+> game theme franchise: ["That Time I Got Reincarnated as a Slime"](https://tensura.fandom.com/wiki/Tensei_Shitara_Slime_Datta_Ken_Wiki). Isekai Fantasy Adventure World with Endings.
 
-This is ASCII CLI Text-based Idle Tensura RPG game.
-Written in C# and .NET framework and Using *Best Practices (not yet).
+This is ASCII CLI Text-based Adventure "Tensura Idle RPG" game.
+Written in C# and .NET framework.
 
 ## Demonstration
 
-## Features
+![Tensura Idle RPG](tensura_idle-rpg_demo.gif)
 
-- 
+## Features
 
 ## Release
 
-- v1
+- current: Version 1.0 Released.
+- [click me to Download Game](https://github.com/dotpep/tensura-idle-rpg/releases/tag/v1.0.0)
 
-- About game
-- Rules
+- [About game]()
+- [Rules]()
 
 ### Install Game .exe
 
+- go to Release page on GitHub repo or [click at this release link](https://github.com/dotpep/tensura-idle-rpg/releases/tag/v1.0.0)
+- download archive file PaintDrying_v1 in format .zip or .rar
+- run .exe file (without deleting other files in archived file)
+
 ### How to play?
+
+- Type options like <kbd>1</kbd>... and <kbd>Enter</kbd> to choose it.
 
 ### What's next 
 
@@ -45,11 +52,11 @@ Written in C# and .NET framework and Using *Best Practices (not yet).
 - [x] Shop
 - [x] NPC
 - [x] Boss Fight
-- [ ] Auto Battle
-- [ ] Refactoring
-- [ ] Migrate project to .NET 7.0 version
-- [ ] Add information about game and demo to README
+- [x] Add information about game and demo to README
 - [ ] Release v1 game-executable to GitHub
+- [ ] Auto Battle
+- [ ] Refactore Harded Code
+- [ ] Migrate project to .NET 7.0 version
 
 ### Requirements
 
